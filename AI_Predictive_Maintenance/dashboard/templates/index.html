@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Predictive Maintenance</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f7ff;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        .card {
+            width: min(90%, 540px);
+            margin: 40px auto;
+            padding: 24px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+        }
+        h1 {
+            color: #1565C0;
+            margin-top: 0;
+        }
+        .metric {
+            margin: 12px 0;
+            padding: 12px;
+            background: #eef5ff;
+            border-radius: 10px;
+        }
+        .value {
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .status {
+            color: #0b5d0b;
+            font-weight: bold;
+        }
+        .small {
+            font-size: 13px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>Motor Monitoring Dashboard</h1>
+        <p class="small" id="timestamp">Waiting for first reading...</p>
+        <div class="metric">
+            <p>Temperature</p>
+            <div class="value" id="temp">{{temp}} °C</div>
+        </div>
+        <div class="metric">
+            <p>Vibration</p>
+            <div class="value" id="vibration">{{vib}} g</div>
+        </div>
+        <div class="metric">
+            <p>Current</p>
+            <div class="value" id="current">{{current}} A</div>
+        </div>
+        <div class="metric">
+            <p>RPM</p>
+            <div class="value" id="rpm">{{rpm}}</div>
+        </div>
+        <div class="metric">
+            <p>Status</p>
+            <div class="value status" id="status">{{status}}</div>
+        </div>
+    </div>
+
+    <script>
+        function updateValues(data) {
+            document.getElementById('temp').textContent = data.temp + ' °C';
+            document.getElementById('vibration').textContent = data.vib + ' g';
+            document.getElementById('current').textContent = data.current + ' A';
+            document.getElementById('rpm').textContent = data.rpm;
+            document.getElementById('status').textContent = data.status;
+            document.getElementById('timestamp').textContent = 'Last updated: ' + new Date().toLocaleTimeString();
+        }
+
+        async function refreshData() {
+            try {
+                const response = await fetch('/api/latest');
+                const data = await response.json();
+                updateValues(data);
+            } catch (error) {
+                console.error('Unable to refresh data:', error);
+            }
+        }
+
+        refreshData();
+        setInterval(refreshData, 2000);
+    </script>
+</body>
+</html>

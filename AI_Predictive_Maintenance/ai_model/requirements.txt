@@ -1,0 +1,12 @@
+numpy
+pandas
+scikit-learn
+joblib
+flask
+RPi.GPIO
+adafruit-blinka
+adafruit-circuitpython-adxl34x
+adafruit-circuitpython-ads1x15
+w1thermsensor
+RPLCD
+smbus2
