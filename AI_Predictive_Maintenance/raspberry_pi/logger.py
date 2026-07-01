@@ -5,6 +5,7 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent
 FILE = BASE_DIR / "motor_log.csv"
 LATEST_FILE = BASE_DIR / "latest.json"
+LIVE_DATA_FILE = BASE_DIR / "live_data.csv"
 
 
 def save(temp, rpm, status):
@@ -25,6 +26,12 @@ def save(temp, rpm, status):
             rpm,
             status
         ])
+
+    # Keep live_data.csv in sync with latest reading
+    with open(LIVE_DATA_FILE, "w", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+        writer.writerow(["Temperature", "RPM", "Status"])
+        writer.writerow([temp, rpm, status])
 
     payload = {
         "Temperature": temp,
