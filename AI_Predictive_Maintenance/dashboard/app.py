@@ -19,8 +19,6 @@ def get_latest_reading():
                 payload = json.load(handle)
                 return {
                     "temp": float(payload.get("Temperature", 0)),
-                    "vib": float(payload.get("Vibration", 0)),
-                    "current": float(payload.get("Current", 0)),
                     "rpm": float(payload.get("RPM", 0)),
                     "status": payload.get("Status", "No data"),
                 }
@@ -34,8 +32,6 @@ def get_latest_reading():
                 latest = df.iloc[-1]
                 return {
                     "temp": float(latest.get("Temperature", 0)),
-                    "vib": float(latest.get("Vibration", 0)),
-                    "current": float(latest.get("Current", 0)),
                     "rpm": float(latest.get("RPM", 0)),
                     "status": latest.get("Status", "No data"),
                 }
@@ -44,8 +40,6 @@ def get_latest_reading():
 
     return {
         "temp": 0,
-        "vib": 0,
-        "current": 0,
         "rpm": 0,
         "status": "No data",
     }
@@ -58,8 +52,6 @@ def home():
     return render_template(
         "index.html",
         temp=data["temp"],
-        vib=data["vib"],
-        current=data["current"],
         rpm=data["rpm"],
         status=data["status"],
     )

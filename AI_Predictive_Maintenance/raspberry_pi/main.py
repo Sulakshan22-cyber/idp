@@ -9,8 +9,6 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.append(str(PROJECT_ROOT))
 
 from raspberry_pi.temperature import get_temperature
-from raspberry_pi.vibration import get_vibration
-from raspberry_pi.current import get_current
 from raspberry_pi.rpm import get_rpm
 from raspberry_pi.lcd import display
 from raspberry_pi.leds import healthy, warning, fault
@@ -29,18 +27,14 @@ def load_model():
 
 def run_cycle(model, encoder):
     temp = get_temperature()
-    vib = get_vibration()
-    curr = get_current()
     rpm = get_rpm()
 
-    sample = [[temp, vib, curr, rpm]]
+    sample = [[temp, rpm]]
     prediction = model.predict(sample)
     status = encoder.inverse_transform(prediction)[0]
 
     print("--------------------------------")
     print("Temperature :", temp)
-    print("Vibration   :", vib)
-    print("Current     :", curr)
     print("RPM         :", rpm)
     print("Status      :", status)
 
@@ -54,8 +48,8 @@ def run_cycle(model, encoder):
         fault()
         on()
 
-    display(temp, vib, curr, rpm, status)
-    save(temp, vib, curr, rpm, status)
+    display(temp, rpm, status)
+    save(temp, rpm, status)
     return status
 
 

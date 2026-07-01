@@ -185,18 +185,6 @@
             </div>
 
             <div class="metric-card">
-                <div class="metric-label">Vibration</div>
-                <div class="metric-value" id="vibration">--</div>
-                <div class="metric-unit">g</div>
-            </div>
-
-            <div class="metric-card">
-                <div class="metric-label">Current</div>
-                <div class="metric-value" id="current">--</div>
-                <div class="metric-unit">A</div>
-            </div>
-
-            <div class="metric-card">
                 <div class="metric-label">RPM</div>
                 <div class="metric-value" id="rpm">--</div>
                 <div class="metric-unit">rpm</div>
@@ -221,8 +209,6 @@
 
         function updateValues(data) {
             document.getElementById('temp').textContent = (data.temp || '--').toFixed(2);
-            document.getElementById('vibration').textContent = (data.vib || '--').toFixed(2);
-            document.getElementById('current').textContent = (data.current || '--').toFixed(2);
             document.getElementById('rpm').textContent = Math.round(data.rpm || 0);
 
             const statusBadge = document.getElementById('status-badge');

@@ -18,8 +18,6 @@ df = pd.read_csv(DATASET_PATH)
 
 X = df[[
 "Temperature",
-"Vibration",
-"Current",
 "RPM"
 ]]
 
