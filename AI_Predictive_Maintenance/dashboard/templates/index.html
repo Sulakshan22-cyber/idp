@@ -3,95 +3,257 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Predictive Maintenance</title>
+    <title>AI Predictive Maintenance Dashboard</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f2f7ff;
-            text-align: center;
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
         }
-        .card {
-            width: min(90%, 540px);
-            margin: 40px auto;
-            padding: 24px;
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .timestamp {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .metric-card {
             background: white;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-align: center;
         }
-        h1 {
-            color: #1565C0;
-            margin-top: 0;
+
+        .metric-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
         }
-        .metric {
-            margin: 12px 0;
-            padding: 12px;
-            background: #eef5ff;
-            border-radius: 10px;
-        }
-        .value {
-            font-size: 28px;
-            font-weight: bold;
-        }
-        .status {
-            color: #0b5d0b;
-            font-weight: bold;
-        }
-        .small {
-            font-size: 13px;
+
+        .metric-label {
+            font-size: 14px;
             color: #666;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .metric-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .metric-unit {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .status-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            grid-column: 1 / -1;
+        }
+
+        .status-label {
+            font-size: 14px;
+            color: #666;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+
+        .status-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            padding: 20px;
+            border-radius: 10px;
+            display: inline-block;
+        }
+
+        .status-healthy {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #28a745;
+        }
+
+        .status-warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 2px solid #ffc107;
+        }
+
+        .status-fault {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #dc3545;
+        }
+
+        .status-nodata {
+            background: #e2e3e5;
+            color: #383d41;
+            border: 2px solid #6c757d;
+        }
+
+        .refresh-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 12px;
+            height: 12px;
+            background: #28a745;
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(40, 167, 69, 0.7);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .metric-value {
+                font-size: 2em;
+            }
+
+            .status-value {
+                font-size: 2em;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="card">
-        <h1>Motor Monitoring Dashboard</h1>
-        <p class="small" id="timestamp">Waiting for first reading...</p>
-        <div class="metric">
-            <p>Temperature</p>
-            <div class="value" id="temp">{{temp}} °C</div>
+    <div class="refresh-indicator"></div>
+
+    <div class="container">
+        <div class="header">
+            <h1>🔧 Motor Predictive Maintenance</h1>
+            <p class="timestamp" id="timestamp">Connecting...</p>
         </div>
-        <div class="metric">
-            <p>Vibration</p>
-            <div class="value" id="vibration">{{vib}} g</div>
-        </div>
-        <div class="metric">
-            <p>Current</p>
-            <div class="value" id="current">{{current}} A</div>
-        </div>
-        <div class="metric">
-            <p>RPM</p>
-            <div class="value" id="rpm">{{rpm}}</div>
-        </div>
-        <div class="metric">
-            <p>Status</p>
-            <div class="value status" id="status">{{status}}</div>
+
+        <div class="dashboard-grid">
+            <div class="metric-card">
+                <div class="metric-label">Temperature</div>
+                <div class="metric-value" id="temp">--</div>
+                <div class="metric-unit">°C</div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-label">Vibration</div>
+                <div class="metric-value" id="vibration">--</div>
+                <div class="metric-unit">g</div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-label">Current</div>
+                <div class="metric-value" id="current">--</div>
+                <div class="metric-unit">A</div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-label">RPM</div>
+                <div class="metric-value" id="rpm">--</div>
+                <div class="metric-unit">rpm</div>
+            </div>
+
+            <div class="status-card">
+                <div class="status-label">Motor Status</div>
+                <div class="status-value" id="status-badge">No Data</div>
+            </div>
         </div>
     </div>
 
     <script>
+        function getStatusClass(status) {
+            if (!status || status === 'No data') return 'status-nodata';
+            const lower = status.toLowerCase();
+            if (lower.includes('healthy')) return 'status-healthy';
+            if (lower.includes('warning')) return 'status-warning';
+            if (lower.includes('fault')) return 'status-fault';
+            return 'status-nodata';
+        }
+
         function updateValues(data) {
-            document.getElementById('temp').textContent = data.temp + ' °C';
-            document.getElementById('vibration').textContent = data.vib + ' g';
-            document.getElementById('current').textContent = data.current + ' A';
-            document.getElementById('rpm').textContent = data.rpm;
-            document.getElementById('status').textContent = data.status;
-            document.getElementById('timestamp').textContent = 'Last updated: ' + new Date().toLocaleTimeString();
+            document.getElementById('temp').textContent = (data.temp || '--').toFixed(2);
+            document.getElementById('vibration').textContent = (data.vib || '--').toFixed(2);
+            document.getElementById('current').textContent = (data.current || '--').toFixed(2);
+            document.getElementById('rpm').textContent = Math.round(data.rpm || 0);
+
+            const statusBadge = document.getElementById('status-badge');
+            statusBadge.textContent = data.status || 'No data';
+            statusBadge.className = 'status-value ' + getStatusClass(data.status);
+
+            const now = new Date();
+            document.getElementById('timestamp').textContent = 'Last updated: ' + now.toLocaleTimeString('en-US', {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
         }
 
         async function refreshData() {
             try {
                 const response = await fetch('/api/latest');
+                if (!response.ok) throw new Error('API error');
                 const data = await response.json();
                 updateValues(data);
             } catch (error) {
                 console.error('Unable to refresh data:', error);
+                document.getElementById('timestamp').textContent = 'Connection lost - retrying...';
             }
         }
 
+        // Initial load
         refreshData();
-        setInterval(refreshData, 2000);
+
+        // Refresh every 1 second for real-time updates
+        setInterval(refreshData, 1000);
     </script>
 </body>
 </html>

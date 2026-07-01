@@ -30,4 +30,4 @@ def get_rpm():
         time.sleep(1)
         rpm = count * 60
         return int(rpm)
-    return random.randint(800, 1800)
+    return random.randint(50, 174)

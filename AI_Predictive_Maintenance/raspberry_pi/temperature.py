@@ -13,4 +13,4 @@ def get_temperature():
             return round(sensor.get_temperature(), 2)
         except Exception:
             pass
-    return round(random.uniform(35.0, 75.0), 2)
+    return round(random.uniform(25.0, 50.0), 2)
