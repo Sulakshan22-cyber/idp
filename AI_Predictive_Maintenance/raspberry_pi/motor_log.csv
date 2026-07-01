@@ -1,3 +1,6 @@
-Temperature,Vibration,Current,RPM,Status
-49.94,2.28,2.34,1537,Warning
-59.94,2.99,1.36,1296,Fault
+Temperature,RPM,Status
+39.45,73,Fault
+48.22,148,Fault
+42.46,135,Fault
+32.33,139,Warning
+38.05,147,Fault
